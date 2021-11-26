@@ -34,9 +34,9 @@ public class Game {
         int count = 0;
         for (int i = 1; i < 5; i++) {
             for (int j = 1; j < 5; j++) {
-                Position positionCard = new Position(i,j);
-                Card card = new Card(cardList[count],positionCard);
-                board[i][j] = new Cell(card,positionCard);
+                Position positionCard = new Position(i, j);
+                Card card = new Card(cardList[count], positionCard);
+                board[i][j] = new Cell(card, positionCard);
                 count += 1;
             }
         }
@@ -48,12 +48,9 @@ public class Game {
         for (int i = 0; i < 6; i++) {
             System.out.print("|  ");
             for (int j = 0; j < 6; j++) {
-                //Position coordinates = board[i][j].getPosition();
-                //Card cardName = board[i][j].getCard();
                 if (board[i][j] == null) {
                     System.out.print(".  ");
-                }
-                else {
+                } else {
                     Card cardName = board[i][j].getCard();
                     System.out.print(cardName.getName() + "  ");
                 }

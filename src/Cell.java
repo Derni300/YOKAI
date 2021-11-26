@@ -11,7 +11,7 @@ public class Cell {
         return position;
     }
 
-    public Card getCard(){
+    public Card getCard() {
         return card;
     }
 }

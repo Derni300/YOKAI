@@ -7,23 +7,7 @@ public class Card {
         this.position = position;
     }
 
-    public char getName(){
+    public char getName() {
         return color;
     }
-
-    /*
-    public static class Builder {
-        private Position position;
-        private char color;
-
-        public Builder(String owner, int token, int isepCoins) {
-            this.position = position;
-            this.color = color;
-        }
-
-        public Card build() {
-            return new Card(this);
-        }
-    }
-    */
 }
