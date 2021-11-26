@@ -17,13 +17,13 @@ public class Game {
         players[1] = new Player("Fanta");
     }
 
-    private void shuffle(char t[]) {
+    private void shuffle(char cardList[]) {
         Random random = new Random();
-        for (int i = 0; i < t.length; i++) {
-            int r = (int) random.nextInt(t.length);
-            char tmp = t[i];
-            t[i] = t[r];
-            t[r] = tmp;
+        for (int i = 0; i < cardList.length; i++) {
+            int r = random.nextInt(cardList.length);
+            char temp = cardList[i];
+            cardList[i] = cardList[r];
+            cardList[r] = temp;
         }
     }
 
@@ -35,23 +35,23 @@ public class Game {
         for (int i = 1; i < 5; i++) {
             for (int j = 1; j < 5; j++) {
                 Position positionCard = new Position(i, j);
-                Card card = new Card(cardList[count], positionCard);
+                YokaiCard card = new YokaiCard(cardList[count], positionCard);
                 board[i][j] = new Cell(card, positionCard);
                 count += 1;
             }
         }
-
     }
 
     private void printBoard() {
+        System.out.println();
         System.out.println("+  -  -  -  -  -  -  +");
         for (int i = 0; i < 6; i++) {
             System.out.print("|  ");
             for (int j = 0; j < 6; j++) {
                 if (board[i][j] == null) {
-                    System.out.print(".  ");
+                    System.out.print("¤  ");
                 } else {
-                    Card cardName = board[i][j].getCard();
+                    YokaiCard cardName = board[i][j].getCard();
                     System.out.print(cardName.getName() + "  ");
                 }
             }

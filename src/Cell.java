@@ -1,8 +1,8 @@
 public class Cell {
-    private Card card;
+    private YokaiCard card;
     private Position position;
 
-    public Cell(Card card, Position position) {
+    public Cell(YokaiCard card, Position position) {
         this.card = card;
         this.position = position;
     }
@@ -11,7 +11,7 @@ public class Cell {
         return position;
     }
 
-    public Card getCard() {
+    public YokaiCard getCard() {
         return card;
     }
 }
