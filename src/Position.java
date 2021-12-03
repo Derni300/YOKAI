@@ -10,4 +10,7 @@ public class Position {
     public String toString() {
         return this.row + "" + this.column;
     }
+
+    public int getRow() {return row;}
+    public int getColumn() {return column;}
 }
