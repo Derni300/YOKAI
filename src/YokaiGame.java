@@ -1,5 +1,4 @@
-import java.util.Random;
-import java.util.Stack;
+import java.util.*;
 
 public class YokaiGame {
     private Player[] players;
@@ -30,6 +29,7 @@ public class YokaiGame {
     }
 
     private void initialiseBoard() {
+        Random random = new Random();
         char[] cardList = {'R', 'R', 'R', 'R', 'B', 'B', 'B', 'B', 'P', 'P', 'P', 'P', 'G', 'G', 'G', 'G'};
         shuffle(cardList);
         //System.out.println(cardList);
@@ -45,19 +45,53 @@ public class YokaiGame {
 
         int playerNumber = 2;
 
-        Stack<String> colorStack = new Stack<String>();
-        String[] colorList = {"R","B","P","G"};
+        String[] colorList = {"R", "B", "P", "G"};
+
+        List<String> duoColorList = new ArrayList<String>();
+        for (int i = 0; i <= 3; i++) {
+            for (int j = 0; j <= 3; j++) {
+                if (i != j) {
+                    duoColorList.add(colorList[i] + colorList[j]);
+                }
+            }
+        }
+
+        System.out.println(duoColorList);
+
+        List<String> triColorList = new ArrayList<String>();
+        for (int i = 0; i <= 3; i++) {
+            for (int j = 0; j <= 3; j++) {
+                for (int k = 0; k <= 3; k++) {
+                    if (i != j && j != k) {
+                        triColorList.add(colorList[i] + colorList[j] + colorList[k]);
+                    }
+                }
+            }
+        }
+
+        System.out.println(triColorList);
+
+        List<String> clueList = new ArrayList<String>();
 
         switch (playerNumber) {
-            case 2 :
-                String[] clueList = {};
+            case 2:
+                for (int i = 0; i <= 7; i++) {
+                    if (i <= 2) {
+                        int id = random.nextInt(colorList.length);
+                        clueList.add(colorList[id]);
+                    } else if (i <= 5) {
+                        for (int j = 0; j <= 1; j++) {
+                            int id = random.nextInt(colorList.length);
+                        }
+
+                        clueList.add("");
+                    } else {
+                        int id = random.nextInt(colorList.length);
+                    }
+                }
         }
 
         Stack<String> clueStack = new Stack<String>();
-
-        for (int i = 0; i <= 7; i++){
-
-        }
     }
 
     private void printBoard() {
