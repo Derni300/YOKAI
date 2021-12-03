@@ -199,17 +199,18 @@ public class YokaiGame {
             x = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
             y = scanner.nextInt();
-        } while (((x >= 6) || (y >= 6)) || board[x][y] != null || isValidMove(board[x][y].getCard()));
+            board[x][y] = temp;
+        } while (((x >= 6) || (y >= 6)) || board[x][y] == null || isValidMove(board[x][y].getCard()));
 
         board[x][y] = temp;
     }
 
     private boolean isValidMove(YokaiCard card) {
         Position cardPosition = card.getPosition();
-        boolean gauche = board[cardPosition.getRow()][cardPosition.getColumn() - 1] == null;
-        boolean droite = board[cardPosition.getRow()][cardPosition.getColumn() + 1] == null;
-        boolean haut = board[cardPosition.getRow() - 1][cardPosition.getColumn()] == null;
-        boolean bas = board[cardPosition.getRow() + 1][cardPosition.getColumn()] == null;
+        boolean gauche = board[cardPosition.getRow()][cardPosition.getColumn() - 1] != null;
+        boolean droite = board[cardPosition.getRow()][cardPosition.getColumn() + 1] != null;
+        boolean haut = board[cardPosition.getRow() - 1][cardPosition.getColumn()] != null;
+        boolean bas = board[cardPosition.getRow() + 1][cardPosition.getColumn()] != null;
         return (gauche || droite || haut || bas);
     }
 }
