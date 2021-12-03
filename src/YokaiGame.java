@@ -6,16 +6,20 @@ public class YokaiGame {
 
     public void play() {
         createPlayers();
-        initialiseBoard();
+        initialiseBoard(players.length);
         printBoard();
     }
 
     private void createPlayers() {
-        //Scanner scanner = new Scanner(System.in);
-        //System.out.println("Veuillez entrer le nom des joueurs");
-        players = new Player[2];
-        players[0] = new Player("Bob");
-        players[1] = new Player("Fanta");
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Veuillez entrer le nombre de joueurs");
+        int playerNumber = scanner.nextInt();
+        players = new Player[playerNumber];
+        for (int i = 0; i < playerNumber; i++) {
+            players[i] = new Player(scanner.nextLine());
+            System.out.println("Nom du joueur " + i);
+        }
+        players[playerNumber - 1] = new Player(scanner.nextLine());
     }
 
     private void shuffle(char[] cardList) {
@@ -28,7 +32,7 @@ public class YokaiGame {
         }
     }
 
-    private void initialiseBoard() {
+    private void initialiseBoard(int playerNumber) {
         Random random = new Random();
         char[] cardList = {'R', 'R', 'R', 'R', 'B', 'B', 'B', 'B', 'P', 'P', 'P', 'P', 'G', 'G', 'G', 'G'};
         shuffle(cardList);
@@ -44,8 +48,6 @@ public class YokaiGame {
                 count += 1;
             }
         }
-
-        int playerNumber = 2;
 
         String[] colorSet = {"R", "B", "P", "G"};
         List<String> colorList = new ArrayList<>(Arrays.asList(colorSet));
@@ -90,11 +92,31 @@ public class YokaiGame {
                 for (int i = 0; i <= 6; i++) {
                     if (i <= 1) {
                         clueList.add(colorList.get(i));
-                    }
-                    else if (i <= 4) {
+                    } else if (i <= 4) {
                         clueList.add(duoColorList.get(i));
+                    } else {
+                        clueList.add(triColorList.get(i));
                     }
-                    else {
+                }
+                Collections.shuffle(clueList);
+            case 3:
+                for (int i = 0; i <= 8; i++) {
+                    if (i <= 1) {
+                        clueList.add(colorList.get(i));
+                    } else if (i <= 5) {
+                        clueList.add(duoColorList.get(i));
+                    } else {
+                        clueList.add(triColorList.get(i));
+                    }
+                }
+                Collections.shuffle(clueList);
+            case 4:
+                for (int i = 0; i <= 9; i++) {
+                    if (i <= 2) {
+                        clueList.add(colorList.get(i));
+                    } else if (i <= 6) {
+                        clueList.add(duoColorList.get(i));
+                    } else {
                         clueList.add(triColorList.get(i));
                     }
                 }
