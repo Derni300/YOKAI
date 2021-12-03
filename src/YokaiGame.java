@@ -32,7 +32,9 @@ public class YokaiGame {
         Random random = new Random();
         char[] cardList = {'R', 'R', 'R', 'R', 'B', 'B', 'B', 'B', 'P', 'P', 'P', 'P', 'G', 'G', 'G', 'G'};
         shuffle(cardList);
+
         //System.out.println(cardList);
+
         int count = 0;
         for (int i = 1; i < 5; i++) {
             for (int j = 1; j < 5; j++) {
@@ -45,53 +47,67 @@ public class YokaiGame {
 
         int playerNumber = 2;
 
-        String[] colorList = {"R", "B", "P", "G"};
+        String[] colorSet = {"R", "B", "P", "G"};
+        List<String> colorList = new ArrayList<>(Arrays.asList(colorSet));
 
-        List<String> duoColorList = new ArrayList<String>();
+        List<String> duoColorList = new ArrayList<>();
         for (int i = 0; i <= 3; i++) {
             for (int j = 0; j <= 3; j++) {
                 if (i != j) {
-                    duoColorList.add(colorList[i] + colorList[j]);
+                    duoColorList.add(colorSet[i] + colorSet[j]);
                 }
             }
         }
 
-        System.out.println(duoColorList);
+        //System.out.println(duoColorList);
 
-        List<String> triColorList = new ArrayList<String>();
+        List<String> triColorList = new ArrayList<>();
         for (int i = 0; i <= 3; i++) {
             for (int j = 0; j <= 3; j++) {
                 for (int k = 0; k <= 3; k++) {
-                    if (i != j && j != k) {
-                        triColorList.add(colorList[i] + colorList[j] + colorList[k]);
+                    if (i != j && j != k && i != k) {
+                        triColorList.add(colorSet[i] + colorSet[j] + colorSet[k]);
                     }
                 }
             }
         }
 
-        System.out.println(triColorList);
+        //System.out.println(triColorList);
 
-        List<String> clueList = new ArrayList<String>();
+        Collections.shuffle(colorList);
+        Collections.shuffle(duoColorList);
+        Collections.shuffle(triColorList);
+
+        //System.out.println(colorList);
+        //System.out.println(duoColorList);
+        //System.out.println(triColorList);
+
+        List<String> clueList = new ArrayList<>();
+        Stack<String> clueStack = new Stack<String>();
 
         switch (playerNumber) {
             case 2:
-                for (int i = 0; i <= 7; i++) {
-                    if (i <= 2) {
-                        int id = random.nextInt(colorList.length);
-                        clueList.add(colorList[id]);
-                    } else if (i <= 5) {
-                        for (int j = 0; j <= 1; j++) {
-                            int id = random.nextInt(colorList.length);
-                        }
-
-                        clueList.add("");
-                    } else {
-                        int id = random.nextInt(colorList.length);
+                for (int i = 0; i <= 6; i++) {
+                    if (i <= 1) {
+                        clueList.add(colorList.get(i));
+                    }
+                    else if (i <= 4) {
+                        clueList.add(duoColorList.get(i));
+                    }
+                    else {
+                        clueList.add(triColorList.get(i));
                     }
                 }
+                Collections.shuffle(clueList);
         }
 
-        Stack<String> clueStack = new Stack<String>();
+        //System.out.println(clueList);
+
+        for (int i = 0; i < clueList.size(); i++) {
+            clueStack.push(clueList.get(i));
+        }
+
+        System.out.println(clueStack);
     }
 
     private void printBoard() {
