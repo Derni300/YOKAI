@@ -44,8 +44,8 @@ public class YokaiGame {
         //System.out.println(cardList);
 
         int count = 0;
-        for (int i = 1; i < 5; i++) {
-            for (int j = 1; j < 5; j++) {
+        for (int i = (n/2 - 2); i < (n/2 + 2); i++) {
+            for (int j = (n/2 - 2); j < (n/2 + 2); j++) {
                 Position positionCard = new Position(i, j);
                 YokaiCard card = new YokaiCard(cardList[count], positionCard);
                 board[i][j] = new Cell(card, positionCard);
@@ -138,7 +138,7 @@ public class YokaiGame {
 
     private void printBoard() {
         System.out.println();
-        System.out.println("+  -  -  -  -  -  -  +");
+        System.out.println("+ " + " - ".repeat(n) + " +");
         for (int i = 0; i < n; i++) {
             System.out.print("|  ");
             for (int j = 0; j < n; j++) {
@@ -152,7 +152,7 @@ public class YokaiGame {
             System.out.print("|");
             System.out.println();
         }
-        System.out.println("+  -  -  -  -  -  -  +");
+        System.out.println("+ " + " - ".repeat(n) + " +");
         System.out.println();
     }
 
