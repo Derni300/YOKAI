@@ -2,7 +2,8 @@ import java.util.*;
 
 public class YokaiGame {
     private Player[] players;
-    public Cell[][] board = new Cell[6][6];
+    int n = 6;
+    public Cell[][] board = new Cell[n][n];
 
     public void play() {
         createPlayers();
@@ -138,9 +139,9 @@ public class YokaiGame {
     private void printBoard() {
         System.out.println();
         System.out.println("+  -  -  -  -  -  -  +");
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < n; i++) {
             System.out.print("|  ");
-            for (int j = 0; j < 6; j++) {
+            for (int j = 0; j < n; j++) {
                 if (board[i][j] == null) {
                     System.out.print("¤  ");
                 } else {
@@ -168,7 +169,7 @@ public class YokaiGame {
                 x = scanner.nextInt();
                 System.out.println("Coordonnées en y de la carte " + i + " :");
                 y = scanner.nextInt();
-            } while (((x >= 6) || (y >= 6)) || board[x][y] == null);
+            } while (((x >= n) || (y >= n)) || board[x][y] == null);
 
             System.out.println("Carte " + i + " : " + board[x][y].getCard().getName());
             System.out.println();
@@ -187,30 +188,47 @@ public class YokaiGame {
             x = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
             y = scanner.nextInt();
-        } while (((x >= 6) || (y >= 6)) || board[x][y] == null);
+        } while (((x >= n) || (y >= n)) || board[x][y] == null);
         System.out.println();
 
-        Cell temp = board[x][y];
-        board[x][y] = null;
+        int i, j;
 
         do {
             System.out.println("Veuillez sélectionner des coordonnées valides où déplacer la carte : ");
             System.out.println("Coordonnées en x de la carte :");
-            x = scanner.nextInt();
+            i = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
-            y = scanner.nextInt();
-            board[x][y] = temp;
-        } while (((x >= 6) || (y >= 6)) || board[x][y] == null || isValidMove(board[x][y].getCard()));
+            j = scanner.nextInt();
+        } while (((i >= n) || (j >= n)) || !(board[i][j] == null) || !isValidMove(board[x][y].getCard()));
 
-        board[x][y] = temp;
+        Cell temp = board[x][y];
+        board[x][y] = null;
+        board[i][j] = temp;
     }
 
     private boolean isValidMove(YokaiCard card) {
         Position cardPosition = card.getPosition();
-        boolean gauche = board[cardPosition.getRow()][cardPosition.getColumn() - 1] != null;
-        boolean droite = board[cardPosition.getRow()][cardPosition.getColumn() + 1] != null;
-        boolean haut = board[cardPosition.getRow() - 1][cardPosition.getColumn()] != null;
-        boolean bas = board[cardPosition.getRow() + 1][cardPosition.getColumn()] != null;
-        return (gauche || droite || haut || bas);
+        boolean gauche,droite,haut,bas;
+        if (cardPosition.getRow() >= 0) {
+            gauche = board[cardPosition.getRow()][cardPosition.getColumn() - 1] != null;
+        } else {
+            gauche = false;
+        }
+        if (cardPosition.getRow() >= n) {
+            droite = board[cardPosition.getRow()][cardPosition.getColumn() + 1] != null;
+        } else {
+            droite = false;
+        }
+        if (cardPosition.getRow() >= 0) {
+            haut = board[cardPosition.getRow() - 1][cardPosition.getColumn()] != null;
+        } else {
+            haut = false;
+        }
+        if (cardPosition.getRow() >= n) {
+            bas = board[cardPosition.getRow() + 1][cardPosition.getColumn()] != null;
+        } else {
+            bas = false;
+        }
+        return (!gauche || !droite || !haut || !bas);
     }
 }
