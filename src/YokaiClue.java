@@ -1,13 +1,13 @@
 public class YokaiClue {
     private Position position;
-    private char[] color;
+    private String color;
 
-    public YokaiClue(char[] color, Position position) {
+    public YokaiClue(String color, Position position) {
         this.color = color;
         this.position = position;
     }
 
-    public char[] getClueName() {
+    public String getClueName() {
         return color;
     }
 }

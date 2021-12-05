@@ -1,9 +1,11 @@
 public class Cell {
-    private YokaiCard card;
+    private YokaiCard yokaiCard;
+    private YokaiClue clueCard;
     private Position position;
 
-    public Cell(YokaiCard card, Position position) {
-        this.card = card;
+    public Cell(YokaiCard yokaiCard, YokaiClue clueCard, Position position) {
+        this.yokaiCard = yokaiCard;
+        this.clueCard = clueCard;
         this.position = position;
     }
 
@@ -11,7 +13,11 @@ public class Cell {
         return position;
     }
 
-    public YokaiCard getCard() {
-        return card;
+    public YokaiCard getYokaiCard() {
+        return yokaiCard;
+    }
+
+    public YokaiClue getClueCard() {
+        return clueCard;
     }
 }

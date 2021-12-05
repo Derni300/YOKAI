@@ -7,6 +7,6 @@ public class YokaiCard {
         this.position = position;
     }
 
-    public char getName() {return color;}
+    public char getCardName() {return color;}
     public Position getPosition() {return position;}
 }

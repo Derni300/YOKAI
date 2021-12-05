@@ -3,15 +3,17 @@ import java.util.*;
 public class YokaiGame {
     private Player[] players;
     int n = 6;
-    public Cell[][] board = new Cell[n][n];
+    public Cell[][] cardBoard = new Cell[n][n];
+    public Cell[][] clueBoard = new Cell[n][n];
 
     public void play() {
         createPlayers();
         initialiseBoard(players.length);
-        printBoard();
+        printCardBoard();
+        printClueBoard();
         showTwoCards();
         moveOneCard();
-        printBoard();
+        printCardBoard();
     }
 
     private void createPlayers() {
@@ -37,18 +39,15 @@ public class YokaiGame {
     }
 
     private void initialiseBoard(int playerNumber) {
-        Random random = new Random();
         char[] cardList = {'R', 'R', 'R', 'R', 'B', 'B', 'B', 'B', 'P', 'P', 'P', 'P', 'G', 'G', 'G', 'G'};
         shuffle(cardList);
 
-        //System.out.println(cardList);
-
         int count = 0;
-        for (int i = (n/2 - 2); i < (n/2 + 2); i++) {
-            for (int j = (n/2 - 2); j < (n/2 + 2); j++) {
+        for (int i = (n / 2 - 2); i < (n / 2 + 2); i++) {
+            for (int j = (n / 2 - 2); j < (n / 2 + 2); j++) {
                 Position positionCard = new Position(i, j);
                 YokaiCard card = new YokaiCard(cardList[count], positionCard);
-                board[i][j] = new Cell(card, positionCard);
+                cardBoard[i][j] = new Cell(card, null, positionCard);
                 count += 1;
             }
         }
@@ -65,8 +64,6 @@ public class YokaiGame {
             }
         }
 
-        //System.out.println(duoColorList);
-
         List<String> triColorList = new ArrayList<>();
         for (int i = 0; i <= 3; i++) {
             for (int j = 0; j <= 3; j++) {
@@ -78,18 +75,12 @@ public class YokaiGame {
             }
         }
 
-        //System.out.println(triColorList);
-
         Collections.shuffle(colorList);
         Collections.shuffle(duoColorList);
         Collections.shuffle(triColorList);
 
-        //System.out.println(colorList);
-        //System.out.println(duoColorList);
-        //System.out.println(triColorList);
-
         List<String> clueList = new ArrayList<>();
-        Stack<String> clueStack = new Stack<String>();
+        Stack<String> clueStack = new Stack<>();
 
         switch (playerNumber) {
             case 2:
@@ -127,26 +118,43 @@ public class YokaiGame {
                 Collections.shuffle(clueList);
         }
 
-        //System.out.println(clueList);
-
-        for (int i = 0; i < clueList.size(); i++) {
-            clueStack.push(clueList.get(i));
+        for (String s : clueList) {
+            clueStack.push(s);
         }
-
-        //System.out.println(clueStack);
     }
 
-    private void printBoard() {
+    private void printCardBoard() {
         System.out.println();
+        System.out.println(" ".repeat(3*(n / 2) - 4) + "[Card Board]" + " ".repeat(3*(n / 2) - 4));
         System.out.println("+ " + " - ".repeat(n) + " +");
         for (int i = 0; i < n; i++) {
             System.out.print("|  ");
             for (int j = 0; j < n; j++) {
-                if (board[i][j] == null) {
+                if (cardBoard[i][j] == null) {
                     System.out.print("¤  ");
                 } else {
-                    YokaiCard cardName = board[i][j].getCard();
-                    System.out.print(cardName.getName() + "  ");
+                    YokaiCard card = cardBoard[i][j].getYokaiCard();
+                    System.out.print(card.getCardName() + "  ");
+                }
+            }
+            System.out.print("|");
+            System.out.println();
+        }
+        System.out.println("+ " + " - ".repeat(n) + " +");
+        System.out.println();
+    }
+
+    private void printClueBoard() {
+        System.out.println(" ".repeat(3*(n / 2) - 4) + "[Clue Board]" + " ".repeat(3*(n / 2) - 4));
+        System.out.println("+ " + " - ".repeat(n) + " +");
+        for (int i = 0; i < n; i++) {
+            System.out.print("|  ");
+            for (int j = 0; j < n; j++) {
+                if (clueBoard[i][j] == null) {
+                    System.out.print("¤  ");
+                } else {
+                    YokaiClue clue = clueBoard[i][j].getClueCard();
+                    System.out.print(clue.getClueName() + "  ");
                 }
             }
             System.out.print("|");
@@ -169,9 +177,9 @@ public class YokaiGame {
                 x = scanner.nextInt();
                 System.out.println("Coordonnées en y de la carte " + i + " :");
                 y = scanner.nextInt();
-            } while (((x >= n) || (y >= n)) || board[x][y] == null);
+            } while (((x >= n) || (y >= n)) || cardBoard[x][y] == null);
 
-            System.out.println("Carte " + i + " : " + board[x][y].getCard().getName());
+            System.out.println("Carte " + i + " : " + cardBoard[x][y].getYokaiCard().getCardName());
             System.out.println();
         }
     }
@@ -188,7 +196,7 @@ public class YokaiGame {
             x = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
             y = scanner.nextInt();
-        } while (((x >= n) || (y >= n)) || board[x][y] == null);
+        } while (((x >= n) || (y >= n)) || cardBoard[x][y] == null);
         System.out.println();
 
         int i, j;
@@ -199,36 +207,36 @@ public class YokaiGame {
             i = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
             j = scanner.nextInt();
-        } while (((i >= n) || (j >= n)) || !(board[i][j] == null) || !isValidMove(board[x][y].getCard()));
+        } while (((i >= n) || (j >= n)) || !(cardBoard[i][j] == null) || !isValidMove(cardBoard[x][y].getYokaiCard()));
 
-        Cell temp = board[x][y];
-        board[x][y] = null;
-        board[i][j] = temp;
+        Cell temp = cardBoard[x][y];
+        cardBoard[x][y] = null;
+        cardBoard[i][j] = temp;
     }
 
     private boolean isValidMove(YokaiCard card) {
         Position cardPosition = card.getPosition();
-        boolean gauche,droite,haut,bas;
+        boolean gauche, droite, haut, bas;
         if (cardPosition.getRow() >= 0) {
-            gauche = board[cardPosition.getRow()][cardPosition.getColumn() - 1] != null;
+            gauche = cardBoard[cardPosition.getRow()][cardPosition.getColumn() - 1] != null;
         } else {
             gauche = false;
         }
-        if (cardPosition.getRow() >= n) {
-            droite = board[cardPosition.getRow()][cardPosition.getColumn() + 1] != null;
+        if (cardPosition.getRow() <= n) {
+            droite = cardBoard[cardPosition.getRow()][cardPosition.getColumn() + 1] != null;
         } else {
             droite = false;
         }
         if (cardPosition.getRow() >= 0) {
-            haut = board[cardPosition.getRow() - 1][cardPosition.getColumn()] != null;
+            haut = cardBoard[cardPosition.getRow() - 1][cardPosition.getColumn()] != null;
         } else {
             haut = false;
         }
-        if (cardPosition.getRow() >= n) {
-            bas = board[cardPosition.getRow() + 1][cardPosition.getColumn()] != null;
+        if (cardPosition.getRow() <= n) {
+            bas = cardBoard[cardPosition.getRow() + 1][cardPosition.getColumn()] != null;
         } else {
             bas = false;
         }
-        return (!gauche || !droite || !haut || !bas);
+        return (gauche || droite || haut || bas);
     }
 }
