@@ -8,12 +8,14 @@ public class YokaiGame {
 
     public void play() {
         createPlayers();
-        initialiseBoard(players.length);
+        initialiseBoard();
+        Stack<String> clueStack = setCardBoard(players.length);
         printCardBoard();
         printClueBoard();
         showTwoCards();
         moveOneCard();
         printCardBoard();
+        drawClueCard(clueStack);
     }
 
     private void createPlayers() {
@@ -38,7 +40,7 @@ public class YokaiGame {
         }
     }
 
-    private void initialiseBoard(int playerNumber) {
+    private void initialiseBoard() {
         char[] cardList = {'R', 'R', 'R', 'R', 'B', 'B', 'B', 'B', 'P', 'P', 'P', 'P', 'G', 'G', 'G', 'G'};
         shuffle(cardList);
 
@@ -51,6 +53,9 @@ public class YokaiGame {
                 count += 1;
             }
         }
+    }
+
+    private Stack<String> setCardBoard(int playerNumber) {
 
         String[] colorSet = {"R", "B", "P", "G"};
         List<String> colorList = new ArrayList<>(Arrays.asList(colorSet));
@@ -121,6 +126,8 @@ public class YokaiGame {
         for (String s : clueList) {
             clueStack.push(s);
         }
+
+        return (clueStack);
     }
 
     private void printCardBoard() {
@@ -219,24 +226,23 @@ public class YokaiGame {
         boolean gauche, droite, haut, bas;
         if (cardPosition.getRow() >= 0) {
             gauche = cardBoard[cardPosition.getRow()][cardPosition.getColumn() - 1] != null;
-        } else {
-            gauche = false;
-        }
-        if (cardPosition.getRow() <= n) {
-            droite = cardBoard[cardPosition.getRow()][cardPosition.getColumn() + 1] != null;
-        } else {
-            droite = false;
-        }
-        if (cardPosition.getRow() >= 0) {
             haut = cardBoard[cardPosition.getRow() - 1][cardPosition.getColumn()] != null;
         } else {
+            gauche = false;
             haut = false;
         }
         if (cardPosition.getRow() <= n) {
+            droite = cardBoard[cardPosition.getRow()][cardPosition.getColumn() + 1] != null;
             bas = cardBoard[cardPosition.getRow() + 1][cardPosition.getColumn()] != null;
         } else {
+            droite = false;
             bas = false;
         }
         return (gauche || droite || haut || bas);
+    }
+
+    private void drawClueCard (Stack<String> clueStack) {
+        String clueCard = clueStack.pop();
+        System.out.println("Indice pioché : " + clueCard);
     }
 }
