@@ -25,7 +25,7 @@ public class YokaiGame {
         players = new Player[playerNumber];
         for (int i = 0; i < playerNumber; i++) {
             players[i] = new Player(scanner.nextLine());
-            System.out.println("Nom du joueur " + i);
+            System.out.println("Nom du joueur " + (i + 1));
         }
         players[playerNumber - 1] = new Player(scanner.nextLine());
     }
@@ -132,13 +132,13 @@ public class YokaiGame {
 
     private void printCardBoard() {
         System.out.println();
-        System.out.println(" ".repeat(3*(n / 2) - 4) + "[Card Board]" + " ".repeat(3*(n / 2) - 4));
-        System.out.println("+ " + " - ".repeat(n) + " +");
+        System.out.println(" ".repeat(3 * (n / 2) - 4) + "[Card Board]" + " ".repeat(3 * (n / 2) - 4));
+        System.out.println("╭ " + " ─ ".repeat(n) + " ╮");
         for (int i = 0; i < n; i++) {
             System.out.print("|  ");
             for (int j = 0; j < n; j++) {
                 if (cardBoard[i][j] == null) {
-                    System.out.print("¤  ");
+                    System.out.print("·  ");
                 } else {
                     YokaiCard card = cardBoard[i][j].getYokaiCard();
                     System.out.print(card.getCardName() + "  ");
@@ -147,18 +147,18 @@ public class YokaiGame {
             System.out.print("|");
             System.out.println();
         }
-        System.out.println("+ " + " - ".repeat(n) + " +");
+        System.out.println("╰ " + " ─ ".repeat(n) + " ╯");
         System.out.println();
     }
 
     private void printClueBoard() {
-        System.out.println(" ".repeat(3*(n / 2) - 4) + "[Clue Board]" + " ".repeat(3*(n / 2) - 4));
-        System.out.println("+ " + " - ".repeat(n) + " +");
+        System.out.println(" ".repeat(3 * (n / 2) - 4) + "[Clue Board]" + " ".repeat(3 * (n / 2) - 4));
+        System.out.println("╭ " + " ─ ".repeat(n) + " ╮");
         for (int i = 0; i < n; i++) {
             System.out.print("|  ");
             for (int j = 0; j < n; j++) {
                 if (clueBoard[i][j] == null) {
-                    System.out.print("¤  ");
+                    System.out.print("·  ");
                 } else {
                     YokaiClue clue = clueBoard[i][j].getClueCard();
                     System.out.print(clue.getClueName() + "  ");
@@ -167,7 +167,7 @@ public class YokaiGame {
             System.out.print("|");
             System.out.println();
         }
-        System.out.println("+ " + " - ".repeat(n) + " +");
+        System.out.println("╰ " + " ─ ".repeat(n) + " ╯");
         System.out.println();
     }
 
@@ -241,8 +241,17 @@ public class YokaiGame {
         return (gauche || droite || haut || bas);
     }
 
-    private void drawClueCard (Stack<String> clueStack) {
+    private void drawClueCard(Stack<String> clueStack) {
+        Scanner scanner = new Scanner(System.in);
         String clueCard = clueStack.pop();
         System.out.println("Indice pioché : " + clueCard);
+        System.out.println("Choisissez si vous voulez mettre l'indice de côter (tap 0) ou le jouer (tap 1)");
+        int choice = scanner.nextInt();
+        switch (choice) {
+            case 0:
+                System.out.println("L'indice est mis sur le côté");
+            case 1:
+                System.out.println("Choisissez ou poser l'indice : ");
+        }
     }
 }
