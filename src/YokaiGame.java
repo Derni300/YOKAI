@@ -10,18 +10,20 @@ public class YokaiGame {
         createPlayers();
         initialiseBoard();
         Stack<String> clueStack = setCardBoard(players.length);
-        printCardBoard();
-        printClueBoard();
-        showTwoCards();
-        moveOneCard();
-        printCardBoard();
-        drawClueCard(clueStack);
+        while (true) {
+            printCardBoard();
+            printClueBoard();
+            showTwoCards();
+            moveOneCard();
+            drawClueCard(clueStack);
+        }
     }
 
     private void createPlayers() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Veuillez entrer le nombre de joueurs");
         int playerNumber = scanner.nextInt();
+        System.out.println();
         players = new Player[playerNumber];
         for (int i = 0; i < playerNumber; i++) {
             players[i] = new Player(scanner.nextLine());
@@ -135,7 +137,7 @@ public class YokaiGame {
         System.out.println(" ".repeat(3 * (n / 2) - 4) + "[Card Board]" + " ".repeat(3 * (n / 2) - 4));
         System.out.println("╭ " + " ─ ".repeat(n) + " ╮");
         for (int i = 0; i < n; i++) {
-            System.out.print("|  ");
+            System.out.print("│  ");
             for (int j = 0; j < n; j++) {
                 if (cardBoard[i][j] == null) {
                     System.out.print("·  ");
@@ -144,7 +146,7 @@ public class YokaiGame {
                     System.out.print(card.getCardName() + "  ");
                 }
             }
-            System.out.print("|");
+            System.out.print("│");
             System.out.println();
         }
         System.out.println("╰ " + " ─ ".repeat(n) + " ╯");
@@ -155,7 +157,7 @@ public class YokaiGame {
         System.out.println(" ".repeat(3 * (n / 2) - 4) + "[Clue Board]" + " ".repeat(3 * (n / 2) - 4));
         System.out.println("╭ " + " ─ ".repeat(n) + " ╮");
         for (int i = 0; i < n; i++) {
-            System.out.print("|  ");
+            System.out.print("│  ");
             for (int j = 0; j < n; j++) {
                 if (clueBoard[i][j] == null) {
                     System.out.print("·  ");
@@ -164,7 +166,7 @@ public class YokaiGame {
                     System.out.print(clue.getClueName() + "  ");
                 }
             }
-            System.out.print("|");
+            System.out.print("│");
             System.out.println();
         }
         System.out.println("╰ " + " ─ ".repeat(n) + " ╯");
@@ -179,7 +181,7 @@ public class YokaiGame {
         for (int i = 1; i <= 2; i++) {
             int x, y;
             do {
-                System.out.println("Veuillez sélectionner des coordonnées valides pour la carte " + i);
+                System.out.println("Veuillez sélectionner des coordonnées valides pour la carte " + i + "\n");
                 System.out.println("Coordonnées en x de la carte " + i + " :");
                 x = scanner.nextInt();
                 System.out.println("Coordonnées en y de la carte " + i + " :");
@@ -198,7 +200,7 @@ public class YokaiGame {
         int x, y;
 
         do {
-            System.out.println("Veuillez sélectionner des coordonnées valides pour la carte à déplacer : ");
+            System.out.println("Veuillez sélectionner des coordonnées valides pour la carte à déplacer :\n");
             System.out.println("Coordonnées en x de la carte :");
             x = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
@@ -209,7 +211,7 @@ public class YokaiGame {
         int i, j;
 
         do {
-            System.out.println("Veuillez sélectionner des coordonnées valides où déplacer la carte : ");
+            System.out.println("Veuillez sélectionner des coordonnées valides où déplacer la carte :\n");
             System.out.println("Coordonnées en x de la carte :");
             i = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
@@ -243,15 +245,34 @@ public class YokaiGame {
 
     private void drawClueCard(Stack<String> clueStack) {
         Scanner scanner = new Scanner(System.in);
+        List<String> drawClueList = new ArrayList<>();
         String clueCard = clueStack.pop();
-        System.out.println("Indice pioché : " + clueCard);
-        System.out.println("Choisissez si vous voulez mettre l'indice de côter (tap 0) ou le jouer (tap 1)");
+        System.out.println("\nIndice pioché : " + clueCard + "\n");
+        System.out.println("Choisissez si vous voulez mettre l'indice de côté (tap 0) ou le jouer (tap 1)");
         int choice = scanner.nextInt();
-        switch (choice) {
-            case 0:
-                System.out.println("L'indice est mis sur le côté");
-            case 1:
-                System.out.println("Choisissez ou poser l'indice : ");
+        System.out.println();
+
+        if (choice == 1) {
+            System.out.println("Choisissez ou poser l'indice :\n");
+            int x, y;
+
+            do {
+                System.out.println("Veuillez sélectionner des coordonnées valides pour l'indice à placer :\n");
+                System.out.println("Coordonnées en x de la carte :");
+                x = scanner.nextInt();
+                System.out.println("Coordonnées en y de la carte :");
+                y = scanner.nextInt();
+            } while (((x >= n) || (y >= n)) || clueBoard[x][y] != null);
+
+            Position positionClue = new Position(x, y);
+            YokaiClue card = new YokaiClue(clueCard, positionClue);
+            clueBoard[x][y] = new Cell(null, card, positionClue);
+
+        } else {
+            System.out.println("L'indice est mis sur le côté\n");
+            drawClueList.add(clueCard);
+            System.out.println("Liste des indices :\n");
+            System.out.println(drawClueList + "\n");
         }
     }
 }
