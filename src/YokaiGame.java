@@ -15,6 +15,7 @@ public class YokaiGame {
             printClueBoard();
             showTwoCards();
             moveOneCard();
+            printCardBoard();
             drawClueCard(clueStack);
         }
     }
@@ -181,14 +182,14 @@ public class YokaiGame {
         for (int i = 1; i <= 2; i++) {
             int x, y;
             do {
-                System.out.println("Veuillez sélectionner des coordonnées valides pour la carte " + i + "\n");
+                System.out.println("Veuillez sélectionner des coordonnées valides pour la carte " + i);
                 System.out.println("Coordonnées en x de la carte " + i + " :");
                 x = scanner.nextInt();
                 System.out.println("Coordonnées en y de la carte " + i + " :");
                 y = scanner.nextInt();
-            } while (((x >= n) || (y >= n)) || cardBoard[x][y] == null);
+            } while ((x >= n || y >= n) || cardBoard[x][y] == null);
 
-            System.out.println("Carte " + i + " : " + cardBoard[x][y].getYokaiCard().getCardName());
+            System.out.println("\nCarte " + i + " : " + cardBoard[x][y].getYokaiCard().getCardName());
             System.out.println();
         }
     }
@@ -200,15 +201,20 @@ public class YokaiGame {
         int x, y;
 
         do {
-            System.out.println("Veuillez sélectionner des coordonnées valides pour la carte à déplacer :\n");
+            System.out.println("Veuillez sélectionner des coordonnées valides pour la carte à déplacer :");
             System.out.println("Coordonnées en x de la carte :");
             x = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
             y = scanner.nextInt();
-        } while (((x >= n) || (y >= n)) || cardBoard[x][y] == null);
+        } while ((x >= n || y >= n) || cardBoard[x][y] == null);
         System.out.println();
 
         int i, j;
+        boolean test;
+
+        Cell temp = cardBoard[x][y];
+        cardBoard[x][y] = null;
+        printCardBoard();
 
         do {
             System.out.println("Veuillez sélectionner des coordonnées valides où déplacer la carte :\n");
@@ -216,31 +222,48 @@ public class YokaiGame {
             i = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
             j = scanner.nextInt();
-        } while (((i >= n) || (j >= n)) || !(cardBoard[i][j] == null) || !isValidMove(cardBoard[x][y].getYokaiCard()));
 
-        Cell temp = cardBoard[x][y];
-        cardBoard[x][y] = null;
-        cardBoard[i][j] = temp;
+            if (cardBoard[i][j] == null) {
+                cardBoard[i][j] = temp;
+                cardBoard[i][j].setPosition(new Position(i,j));
+                cardBoard[i][j].getYokaiCard().setPosition(new Position(i,j));
+
+                test = (i >= n || j >= n) || isValidMove(cardBoard[i][j]);
+                if (test) {
+                    cardBoard[i][j] = null;
+                }
+            } else {
+                test = true;
+            }
+        } while (test);
     }
 
-    private boolean isValidMove(YokaiCard card) {
-        Position cardPosition = card.getPosition();
+    private boolean isValidMove(Cell cell) {
+        Position cellPosition = cell.getPosition();
         boolean gauche, droite, haut, bas;
-        if (cardPosition.getRow() >= 0) {
-            gauche = cardBoard[cardPosition.getRow()][cardPosition.getColumn() - 1] != null;
-            haut = cardBoard[cardPosition.getRow() - 1][cardPosition.getColumn()] != null;
+        if (cellPosition.getRow() > 0) {
+            haut = cardBoard[cellPosition.getRow() - 1][cellPosition.getColumn()] != null;
         } else {
-            gauche = false;
             haut = false;
         }
-        if (cardPosition.getRow() <= n) {
-            droite = cardBoard[cardPosition.getRow()][cardPosition.getColumn() + 1] != null;
-            bas = cardBoard[cardPosition.getRow() + 1][cardPosition.getColumn()] != null;
+        if (cellPosition.getColumn() > 0) {
+            gauche = cardBoard[cellPosition.getRow()][cellPosition.getColumn() - 1] != null;
         } else {
-            droite = false;
+            gauche = false;
+        }
+        if (cellPosition.getRow() < n) {
+            bas = cardBoard[cellPosition.getRow() + 1][cellPosition.getColumn()] != null;
+        } else {
             bas = false;
         }
-        return (gauche || droite || haut || bas);
+        if (cellPosition.getColumn() < n) {
+            droite = cardBoard[cellPosition.getRow()][cellPosition.getColumn() + 1] != null;
+        } else {
+            droite = false;
+        }
+
+        System.out.println("gauche : " + gauche + " ,droite : " + droite + " ,haut : " + haut + " ,bas : " + bas);
+        return (!(gauche || droite || haut || bas));
     }
 
     private void drawClueCard(Stack<String> clueStack) {

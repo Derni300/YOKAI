@@ -12,6 +12,7 @@ public class Cell {
     public Position getPosition() {
         return position;
     }
+    public void setPosition(Position position) {this.position = position;}
 
     public YokaiCard getYokaiCard() {
         return yokaiCard;
