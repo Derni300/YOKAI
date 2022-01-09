@@ -10,14 +10,15 @@ public class YokaiGame {
         createPlayers();
         initialiseBoard();
         Stack<String> clueStack = setCardBoard(players.length);
-        while (true) {
+        do {
             printCardBoard();
             printClueBoard();
             showTwoCards();
             moveOneCard();
             printCardBoard();
             drawClueCard(clueStack);
-        }
+
+        } while (yokaiAreAppeased());
     }
 
     private void createPlayers() {
@@ -134,7 +135,6 @@ public class YokaiGame {
     }
 
     private void printCardBoard() {
-        System.out.println();
         System.out.println(" ".repeat(3 * (n / 2) - 4) + "[Card Board]" + " ".repeat(3 * (n / 2) - 4));
         System.out.println("╭ " + " ─ ".repeat(n) + " ╮");
         for (int i = 0; i < n; i++) {
@@ -251,12 +251,12 @@ public class YokaiGame {
         } else {
             gauche = false;
         }
-        if (cellPosition.getRow() < n) {
+        if (cellPosition.getRow() < n - 1) {
             bas = cardBoard[cellPosition.getRow() + 1][cellPosition.getColumn()] != null;
         } else {
             bas = false;
         }
-        if (cellPosition.getColumn() < n) {
+        if (cellPosition.getColumn() < n - 1) {
             droite = cardBoard[cellPosition.getRow()][cellPosition.getColumn() + 1] != null;
         } else {
             droite = false;
@@ -297,5 +297,58 @@ public class YokaiGame {
             System.out.println("Liste des indices :\n");
             System.out.println(drawClueList + "\n");
         }
+    }
+
+    private boolean yokaiAreAppeased() {
+        Scanner scannerLine = new Scanner(System.in);
+        System.out.println("Voulez vous déclarer que les Yokais sont apaisés ? (Y/N)\n");
+        String choice = scannerLine.nextLine();
+        if (choice.equals("Y")) {
+            System.out.println(verification());
+            return verification();
+        } else {
+            return true;
+        }
+    }
+
+    private boolean verification() {
+        boolean win = true;
+        boolean gauche, droite, haut, bas;
+        for (int i = 0; i < cardBoard.length; i++) {
+            for (int j = 0; j < cardBoard.length; j++) {
+                if (cardBoard[i][j] == null) {
+                    break;
+                } else {
+                    if (i > 0) {
+                        haut = cardBoard[i - 1][j].getYokaiCard().getCardName()
+                                == cardBoard[i][j].getYokaiCard().getCardName();
+                    } else {
+                        haut = false;
+                    }
+                    if (j > 0) {
+                        gauche = cardBoard[i][j - 1].getYokaiCard().getCardName()
+                                == cardBoard[i][j].getYokaiCard().getCardName();
+                    } else {
+                        gauche = false;
+                    }
+                    if (i < n) {
+                        bas = cardBoard[i + 1][j].getYokaiCard().getCardName()
+                                == cardBoard[i][j].getYokaiCard().getCardName();
+                    } else {
+                        bas = false;
+                    }
+                    if (j < n) {
+                        droite = cardBoard[i][j + 1].getYokaiCard().getCardName()
+                                == cardBoard[i][j].getYokaiCard().getCardName();
+                    } else {
+                        droite = false;
+                    }
+                    if (!(gauche || droite || haut || bas)) {
+                        win = false;
+                    }
+                }
+            }
+        }
+    return win;
     }
 }
