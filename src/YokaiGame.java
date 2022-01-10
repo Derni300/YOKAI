@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class YokaiGame {
-    private Player[] players;
+    private List<Player> players;
     int n = 6;
     public Cell[][] cardBoard = new Cell[n][n];
     public Cell[][] clueBoard = new Cell[n][n];
@@ -9,29 +9,32 @@ public class YokaiGame {
     public void play() {
         createPlayers();
         initialiseBoard();
-        Stack<String> clueStack = setCardBoard(players.length);
+        Stack<String> clueStack = setCardBoard(players.size());
+        int turn = 0;
         do {
+            System.out.println("Au tour de : " + players.get(turn).getName() + "\n");
+            if (turn < players.size() - 1) {turn += 1;} else {turn = 0;}
             printCardBoard();
             printClueBoard();
             showTwoCards();
             moveOneCard();
             printCardBoard();
             drawClueCard(clueStack);
-
         } while (yokaiAreAppeased());
     }
 
+
     private void createPlayers() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Veuillez entrer le nombre de joueurs");
-        int playerNumber = scanner.nextInt();
-        System.out.println();
-        players = new Player[playerNumber];
+        players = new ArrayList<>();
+        Scanner scannerInt = new Scanner(System.in);
+        Scanner scannerLine = new Scanner(System.in);
+        System.out.println("Veuillez entrer le nombre de joueurs\n");
+        int playerNumber = scannerInt.nextInt();
         for (int i = 0; i < playerNumber; i++) {
-            players[i] = new Player(scanner.nextLine());
             System.out.println("Nom du joueur " + (i + 1));
+            players.add(new Player(scannerLine.nextLine()));
         }
-        players[playerNumber - 1] = new Player(scanner.nextLine());
+        System.out.println();
     }
 
     private void shuffle(char[] cardList) {
@@ -349,6 +352,6 @@ public class YokaiGame {
                 }
             }
         }
-    return win;
+        return win;
     }
 }
