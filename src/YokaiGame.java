@@ -28,8 +28,9 @@ public class YokaiGame {
         players = new ArrayList<>();
         Scanner scannerInt = new Scanner(System.in);
         Scanner scannerLine = new Scanner(System.in);
-        System.out.println("Veuillez entrer le nombre de joueurs\n");
+        System.out.println("Veuillez entrer le nombre de joueurs");
         int playerNumber = scannerInt.nextInt();
+        System.out.println();
         for (int i = 0; i < playerNumber; i++) {
             System.out.println("Nom du joueur " + (i + 1));
             players.add(new Player(scannerLine.nextLine()));
