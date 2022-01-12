@@ -1,3 +1,9 @@
+
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 import java.util.*;
 
 public class YokaiGame {
@@ -7,13 +13,18 @@ public class YokaiGame {
     public Cell[][] clueBoard = new Cell[n][n];
 
     public void play() {
+        playSound();
         createPlayers();
         initialiseBoard();
         Stack<String> clueStack = setCardBoard(players.size());
         int turn = 0;
         do {
             System.out.println("Au tour de : " + players.get(turn).getName() + "\n");
-            if (turn < players.size() - 1) {turn += 1;} else {turn = 0;}
+            if (turn < players.size() - 1) {
+                turn += 1;
+            } else {
+                turn = 0;
+            }
             printCardBoard();
             printClueBoard();
             showTwoCards();
@@ -229,8 +240,8 @@ public class YokaiGame {
 
             if (cardBoard[i][j] == null) {
                 cardBoard[i][j] = temp;
-                cardBoard[i][j].setPosition(new Position(i,j));
-                cardBoard[i][j].getYokaiCard().setPosition(new Position(i,j));
+                cardBoard[i][j].setPosition(new Position(i, j));
+                cardBoard[i][j].getYokaiCard().setPosition(new Position(i, j));
 
                 test = (i >= n || j >= n) || isValidMove(cardBoard[i][j]);
                 if (test) {
@@ -354,5 +365,17 @@ public class YokaiGame {
             }
         }
         return win;
+    }
+
+    public void playSound() {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("8-bit.wav").getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+        } catch (Exception ex) {
+            System.out.println("Error with playing sound.");
+            ex.printStackTrace();
+        }
     }
 }
