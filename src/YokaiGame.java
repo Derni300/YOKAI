@@ -219,7 +219,7 @@ public class YokaiGame {
         int x, y;
 
         do {
-            System.out.println("Veuillez sélectionner des coordonnées valides pour la carte à déplacer :");
+            System.out.println("\nVeuillez sélectionner des coordonnées valides pour la carte à déplacer :");
             System.out.println("Coordonnées en x de la carte :");
             x = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
@@ -235,20 +235,23 @@ public class YokaiGame {
         printCardBoard();
 
         do {
-            System.out.println("Veuillez sélectionner des coordonnées valides où déplacer la carte :\n");
+            System.out.println("\nVeuillez sélectionner des coordonnées valides où déplacer la carte :\n");
             System.out.println("Coordonnées en x de la carte :");
             i = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
             j = scanner.nextInt();
+            if (i < n && j < n) {
+                if (cardBoard[i][j] == null) {
+                    cardBoard[i][j] = temp;
+                    cardBoard[i][j].setPosition(new Position(i, j));
+                    cardBoard[i][j].getYokaiCard().setPosition(new Position(i, j));
 
-            if (cardBoard[i][j] == null) {
-                cardBoard[i][j] = temp;
-                cardBoard[i][j].setPosition(new Position(i, j));
-                cardBoard[i][j].getYokaiCard().setPosition(new Position(i, j));
-
-                test = (i >= n || j >= n) || isValidMove(cardBoard[i][j]);
-                if (test) {
-                    cardBoard[i][j] = null;
+                    test = (i >= n || j >= n) || isValidMove(cardBoard[i][j]);
+                    if (test) {
+                        cardBoard[i][j] = null;
+                    }
+                } else {
+                    test = true;
                 }
             } else {
                 test = true;
@@ -319,54 +322,60 @@ public class YokaiGame {
 
     private boolean yokaiAreAppeased() {
         Scanner scannerLine = new Scanner(System.in);
-        System.out.println("Voulez vous déclarer que les Yokais sont apaisés ? (Y/N)\n");
-        String choice = scannerLine.nextLine();
-        if (choice.equals("Y")) {
-            System.out.println(verification());
-            return verification();
-        } else {
-            return true;
-        }
+        //System.out.println("Voulez vous déclarer que les Yokais sont apaisés ? (Y/N)\n");
+        //String choice = scannerLine.nextLine();
+        return verification();
+        //if (choice.equals("Y")) {
+        //System.out.println(verification());
+        //return verification();
+        //} else {
+        //return true;
+        //}
     }
 
     private boolean verification() {
-        boolean win = true;
+        boolean win = false;
         boolean gauche, droite, haut, bas;
-        for (int i = 0; i < cardBoard.length; i++) {
-            for (int j = 0; j < cardBoard.length; j++) {
-                if (cardBoard[i][j] == null) {
-                    break;
-                } else {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (cardBoard[i][j] != null) {
+
                     if (i > 0) {
-                        haut = cardBoard[i - 1][j].getYokaiCard().getCardName()
-                                == cardBoard[i][j].getYokaiCard().getCardName();
-                    } else {
-                        haut = false;
-                    }
+                        if (cardBoard[i - 1][j] != null) {
+                            haut = cardBoard[i - 1][j].getYokaiCard().getCardName()
+                                    == cardBoard[i][j].getYokaiCard().getCardName();
+                        } else {haut = false;}
+                    } else {haut = false;}
+
                     if (j > 0) {
-                        gauche = cardBoard[i][j - 1].getYokaiCard().getCardName()
-                                == cardBoard[i][j].getYokaiCard().getCardName();
-                    } else {
-                        gauche = false;
-                    }
-                    if (i < n) {
-                        bas = cardBoard[i + 1][j].getYokaiCard().getCardName()
-                                == cardBoard[i][j].getYokaiCard().getCardName();
-                    } else {
-                        bas = false;
-                    }
-                    if (j < n) {
-                        droite = cardBoard[i][j + 1].getYokaiCard().getCardName()
-                                == cardBoard[i][j].getYokaiCard().getCardName();
-                    } else {
-                        droite = false;
-                    }
+                        if (cardBoard[i][j - 1] != null) {
+                            gauche = cardBoard[i][j - 1].getYokaiCard().getCardName()
+                                    == cardBoard[i][j].getYokaiCard().getCardName();
+                        } else {gauche = false;}
+                    } else {gauche = false;}
+
+                    if (i < n - 1) {
+                        if (cardBoard[i + 1][j] != null) {
+                            bas = cardBoard[i + 1][j].getYokaiCard().getCardName()
+                                    == cardBoard[i][j].getYokaiCard().getCardName();
+                        } else {bas = false;}
+                    } else {bas = false;}
+
+                    if (j < n - 1) {
+                        if (cardBoard[i][j + 1] != null) {
+                            droite = cardBoard[i][j + 1].getYokaiCard().getCardName()
+                                    == cardBoard[i][j].getYokaiCard().getCardName();
+                        } else {droite = false;}
+                    } else {droite = false;}
+
                     if (!(gauche || droite || haut || bas)) {
-                        win = false;
+                        win = true;
                     }
+                    //System.out.println("(" + i + "," + j + ") " + "gauche : " + gauche + " ,droite : " + droite + " ,haut : " + haut + " ,bas : " + bas);
                 }
             }
         }
+        System.out.println(win);
         return win;
     }
 
