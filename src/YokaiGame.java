@@ -224,7 +224,7 @@ public class YokaiGame {
             x = scanner.nextInt();
             System.out.println("Coordonnées en y de la carte :");
             y = scanner.nextInt();
-        } while ((x >= n || y >= n) || cardBoard[x][y] == null);
+        } while ((x >= n || y >= n) || cardBoard[x][y] == null || clueBoard[x][y] != null);
         System.out.println();
 
         int i, j;
