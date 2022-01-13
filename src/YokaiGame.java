@@ -1,13 +1,13 @@
-
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
+
 import java.util.*;
 
 public class YokaiGame {
     private List<Player> players;
+    int turn = 0;
     int n = 6;
     public Cell[][] cardBoard = new Cell[n][n];
     public Cell[][] clueBoard = new Cell[n][n];
@@ -17,14 +17,8 @@ public class YokaiGame {
         createPlayers();
         initialiseBoard();
         Stack<String> clueStack = setCardBoard(players.size());
-        int turn = 0;
         do {
-            System.out.println("Au tour de : " + players.get(turn).getName() + "\n");
-            if (turn < players.size() - 1) {
-                turn += 1;
-            } else {
-                turn = 0;
-            }
+            nextTurn();
             printCardBoard();
             printClueBoard();
             showTwoCards();
@@ -47,6 +41,15 @@ public class YokaiGame {
             players.add(new Player(scannerLine.nextLine()));
         }
         System.out.println();
+    }
+
+    private void nextTurn() {
+        System.out.println("Au tour de : " + players.get(turn).getName() + "\n");
+        if (turn < players.size() - 1) {
+            turn += 1;
+        } else {
+            turn = 0;
+        }
     }
 
     private void shuffle(char[] cardList) {
@@ -277,7 +280,7 @@ public class YokaiGame {
             droite = false;
         }
 
-        System.out.println("gauche : " + gauche + " ,droite : " + droite + " ,haut : " + haut + " ,bas : " + bas);
+        //System.out.println("gauche : " + gauche + " ,droite : " + droite + " ,haut : " + haut + " ,bas : " + bas);
         return (!(gauche || droite || haut || bas));
     }
 
