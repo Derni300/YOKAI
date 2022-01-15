@@ -6,17 +6,19 @@ import java.io.File;
 import java.util.*;
 
 public class YokaiGame {
-    private List<Player> players;
-    int turn = 0;
     int n = 6;
-    public Cell[][] cardBoard = new Cell[n][n];
-    public Cell[][] clueBoard = new Cell[n][n];
+    List<Player> players = new ArrayList<>();
+    int turn = 0;
+    Cell[][] cardBoard = new Cell[n][n];
+    Cell[][] clueBoard = new Cell[n][n];
+    Stack<String> clueStack = new Stack<>();
+    List<String> drawClueList = new ArrayList<>();
 
     public void play() {
         playSound();
         createPlayers();
         initialiseBoard();
-        Stack<String> clueStack = setCardBoard(players.size());
+        setCardBoard(players.size());
         do {
             nextTurn();
             printCardBoard();
@@ -27,7 +29,6 @@ public class YokaiGame {
             drawClueCard(clueStack);
         } while (yokaiAreAppeased());
     }
-
 
     private void createPlayers() {
         players = new ArrayList<>();
@@ -77,7 +78,7 @@ public class YokaiGame {
         }
     }
 
-    private Stack<String> setCardBoard(int playerNumber) {
+    private void setCardBoard(int playerNumber) {
 
         String[] colorSet = {"R", "B", "P", "G"};
         List<String> colorList = new ArrayList<>(Arrays.asList(colorSet));
@@ -107,7 +108,6 @@ public class YokaiGame {
         Collections.shuffle(triColorList);
 
         List<String> clueList = new ArrayList<>();
-        Stack<String> clueStack = new Stack<>();
 
         switch (playerNumber) {
             case 2:
@@ -148,8 +148,6 @@ public class YokaiGame {
         for (String s : clueList) {
             clueStack.push(s);
         }
-
-        return (clueStack);
     }
 
     private void printCardBoard() {
@@ -215,7 +213,6 @@ public class YokaiGame {
     private void moveOneCard() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Choisissez les coordonnées de la carte à déplacer :");
-        System.out.println();
         int x, y;
 
         do {
@@ -289,7 +286,6 @@ public class YokaiGame {
 
     private void drawClueCard(Stack<String> clueStack) {
         Scanner scanner = new Scanner(System.in);
-        List<String> drawClueList = new ArrayList<>();
         String clueCard = clueStack.pop();
         System.out.println("\nIndice pioché : " + clueCard + "\n");
         System.out.println("Choisissez si vous voulez mettre l'indice de côté (tap 0) ou le jouer (tap 1)");
@@ -322,19 +318,20 @@ public class YokaiGame {
 
     private boolean yokaiAreAppeased() {
         Scanner scannerLine = new Scanner(System.in);
-        //System.out.println("Voulez vous déclarer que les Yokais sont apaisés ? (Y/N)\n");
-        //String choice = scannerLine.nextLine();
-        return verification();
-        //if (choice.equals("Y")) {
-        //System.out.println(verification());
-        //return verification();
-        //} else {
-        //return true;
-        //}
+        System.out.println("Voulez vous déclarer que les Yokais sont apaisés ? (Y/N)\n");
+        String choice = scannerLine.nextLine();
+        if (choice.equals("Y") || clueStack.size() == 0) {
+            if (verification()) {
+                System.out.println(score());
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private boolean verification() {
-        boolean win = false;
+        boolean win = true;
         boolean gauche, droite, haut, bas;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -344,38 +341,58 @@ public class YokaiGame {
                         if (cardBoard[i - 1][j] != null) {
                             haut = cardBoard[i - 1][j].getYokaiCard().getCardName()
                                     == cardBoard[i][j].getYokaiCard().getCardName();
-                        } else {haut = false;}
-                    } else {haut = false;}
+                        } else {
+                            haut = false;
+                        }
+                    } else {
+                        haut = false;
+                    }
 
                     if (j > 0) {
                         if (cardBoard[i][j - 1] != null) {
                             gauche = cardBoard[i][j - 1].getYokaiCard().getCardName()
                                     == cardBoard[i][j].getYokaiCard().getCardName();
-                        } else {gauche = false;}
-                    } else {gauche = false;}
+                        } else {
+                            gauche = false;
+                        }
+                    } else {
+                        gauche = false;
+                    }
 
                     if (i < n - 1) {
                         if (cardBoard[i + 1][j] != null) {
                             bas = cardBoard[i + 1][j].getYokaiCard().getCardName()
                                     == cardBoard[i][j].getYokaiCard().getCardName();
-                        } else {bas = false;}
-                    } else {bas = false;}
+                        } else {
+                            bas = false;
+                        }
+                    } else {
+                        bas = false;
+                    }
 
                     if (j < n - 1) {
                         if (cardBoard[i][j + 1] != null) {
                             droite = cardBoard[i][j + 1].getYokaiCard().getCardName()
                                     == cardBoard[i][j].getYokaiCard().getCardName();
-                        } else {droite = false;}
-                    } else {droite = false;}
+                        } else {
+                            droite = false;
+                        }
+                    } else {
+                        droite = false;
+                    }
 
                     if (!(gauche || droite || haut || bas)) {
-                        win = true;
+                        win = false;
                     }
                     //System.out.println("(" + i + "," + j + ") " + "gauche : " + gauche + " ,droite : " + droite + " ,haut : " + haut + " ,bas : " + bas);
                 }
             }
         }
-        System.out.println(win);
+        if (win) {
+            System.out.println("Défaite");
+        } else {
+            System.out.println("Victoire");
+        }
         return win;
     }
 
@@ -389,5 +406,55 @@ public class YokaiGame {
             System.out.println("Error with playing sound.");
             ex.printStackTrace();
         }
+    }
+
+    public int score() {
+        int finalScore = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (cardBoard[i][j] != null && clueBoard[i][j] != null) {
+                    int count = 0;
+                    for (int k = 0; k < clueBoard[i][j].getClueCard().getClueName().length(); k++) {
+                        if (cardBoard[i][j].getYokaiCard().getCardName() == clueBoard[i][j].getClueCard().getClueName().charAt(k)) {
+                            finalScore += 1;
+                        } else {
+                            count += 1;
+                        }
+                    }
+                    if (count == clueBoard[i][j].getClueCard().getClueName().length()) {
+                        finalScore -= 1;
+                    }
+                }
+            }
+        }
+
+        finalScore += 2*drawClueList.size();
+        finalScore += 5*clueStack.size();
+
+        System.out.println("Vôtre score : " + finalScore);
+
+        System.out.println("\n Victoire : ");
+
+        switch (players.size()) {
+            case 2:
+                if (finalScore <= 7) {
+                    System.out.print("Honorable");
+                } else if (finalScore <= 11) {
+                    System.out.print("Glorieuse");
+                } else {System.out.print("Totale");}
+            case 3:
+                if (finalScore <= 9) {
+                    System.out.print("Honorable");
+                } else if (finalScore <= 13) {
+                    System.out.print("Glorieuse");
+                } else {System.out.print("Totale");}
+            case 4:
+                if (finalScore <= 10) {
+                    System.out.print("Honorable");
+                } else if (finalScore <= 14) {
+                    System.out.print("Glorieuse");
+                } else {System.out.print("Totale");}
+        }
+        return finalScore;
     }
 }
