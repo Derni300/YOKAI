@@ -389,9 +389,9 @@ public class YokaiGame {
             }
         }
         if (win) {
-            System.out.println("Défaite");
-        } else {
             System.out.println("Victoire");
+        } else {
+            System.out.println("Défaite");
         }
         return win;
     }
