@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.*;
 
 public class YokaiGame {
-    int n = 6;
+    int n = 8;
     List<Player> players = new ArrayList<>();
     int turn = 0;
     Cell[][] cardBoard = new Cell[n][n];
@@ -16,16 +16,18 @@ public class YokaiGame {
 
     public void play() {
         playSound();
-        createPlayers();
-        initialiseBoard();
-        setCardBoard(players.size());
         do {
-            nextTurn();
-            printBoard(n, n);
-            showTwoCards();
-            moveOneCard();
-            drawClueCard(clueStack);
-        } while (yokaiAreAppeased());
+            createPlayers();
+            initialiseBoard();
+            setCardBoard(players.size());
+            do {
+                nextTurn();
+                printBoard(n, n);
+                showTwoCards();
+                moveOneCard();
+                drawClueCard(clueStack);
+            } while (yokaiAreAppeased());
+        } while (playAgain());
     }
 
     public static final String ANSI_RESET = "\u001B[0m";
@@ -198,9 +200,9 @@ public class YokaiGame {
             int y;
             do {
                 System.out.println("Veuillez sélectionner des coordonnées valides pour la carte " + i + "\n");
-                System.out.println("Coordonnées en x ∈ [0;" + (n - 1) + "] de la carte " + i + " :");
+                System.out.println("Coordonnées en i ∈ [0;" + (n - 1) + "] de la carte " + i + " :");
                 x = scanner.nextInt();
-                System.out.println("Coordonnées en y ∈ [0;" + (n - 1) + "] de la carte " + i + " :");
+                System.out.println("Coordonnées en j ∈ [0;" + (n - 1) + "] de la carte " + i + " :");
                 y = scanner.nextInt();
             } while ((x >= n || y >= n) || (x < 0 || y < 0) || cardBoard[x][y] == null);
             printBoard(x, y);
@@ -216,9 +218,9 @@ public class YokaiGame {
 
         do {
             System.out.println("\nVeuillez sélectionner des coordonnées valides pour la carte à déplacer :");
-            System.out.println("Coordonnées en x ∈ [0;" + (n - 1) + "] de la carte :");
+            System.out.println("Coordonnées en i ∈ [0;" + (n - 1) + "] de la carte :");
             x = scanner.nextInt();
-            System.out.println("Coordonnées en y ∈ [0;" + (n - 1) + "] de la carte :");
+            System.out.println("Coordonnées en j ∈ [0;" + (n - 1) + "] de la carte :");
             y = scanner.nextInt();
         } while ((x >= n || y >= n) || (x < 0 || y < 0) || cardBoard[x][y] == null || clueBoard[x][y] != null);
 
@@ -232,9 +234,9 @@ public class YokaiGame {
 
         do {
             System.out.println("Veuillez sélectionner des coordonnées valides où déplacer la carte :\n");
-            System.out.println("Coordonnées en x ∈ [0;" + (n - 1) + "] de la carte :");
+            System.out.println("Coordonnées en i ∈ [0;" + (n - 1) + "] de la carte :");
             i = scanner.nextInt();
-            System.out.println("Coordonnées en y ∈ [0;" + (n - 1) + "] de la carte :");
+            System.out.println("Coordonnées en j ∈ [0;" + (n - 1) + "] de la carte :");
             j = scanner.nextInt();
             if (i < n && j < n) {
                 if (cardBoard[i][j] == null) {
@@ -303,9 +305,9 @@ public class YokaiGame {
 
             do {
                 System.out.println("Veuillez sélectionner des coordonnées valides pour l'indice sélectionné à placer :\n");
-                System.out.println("Coordonnées en x ∈ [0;" + (n - 1) + "] de la carte :");
+                System.out.println("Coordonnées en i ∈ [0;" + (n - 1) + "] de la carte :");
                 x = scannerInt.nextInt();
-                System.out.println("Coordonnées en y ∈ [0;" + (n - 1) + "] de la carte :");
+                System.out.println("Coordonnées en j ∈ [0;" + (n - 1) + "] de la carte :");
                 y = scannerInt.nextInt();
             } while (((x >= n) || (y >= n)) || clueBoard[x][y] != null);
 
@@ -334,9 +336,9 @@ public class YokaiGame {
 
             do {
                 System.out.println("Veuillez sélectionner des coordonnées valides pour l'indice à placer :\n");
-                System.out.println("Coordonnées en x ∈ [0;" + (n - 1) + "] de la carte :");
+                System.out.println("Coordonnées en i ∈ [0;" + (n - 1) + "] de la carte :");
                 x = scannerInt.nextInt();
-                System.out.println("Coordonnées en y ∈ [0;" + (n - 1) + "] de la carte :");
+                System.out.println("Coordonnées en j ∈ [0;" + (n - 1) + "] de la carte :");
                 y = scannerInt.nextInt();
             } while (((x >= n) || (y >= n)) || clueBoard[x][y] != null);
 
@@ -521,5 +523,11 @@ public class YokaiGame {
                 }
         }
         return finalScore;
+    }
+
+    public boolean playAgain() {
+        Scanner scannerLine = new Scanner(System.in);
+        String choice = scannerLine.nextLine();
+        return choice.equals("Y");
     }
 }
