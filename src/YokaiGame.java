@@ -34,6 +34,8 @@ public class YokaiGame {
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_YELLOW = "\u001B[33m";
 
     private void createPlayers() {
@@ -168,17 +170,25 @@ public class YokaiGame {
                 if (cardBoard[i][j] == null) {
                     System.out.print("  ·  ");
                 } else if (i == x && j == y) {
-                    System.out.print(ANSI_GREEN + "  " + cardBoard[i][j].getYokaiCard().getCardName() + "  " + ANSI_RESET);
+                    if (cardBoard[i][j].getYokaiCard().getCardName() == 'B') {
+                        System.out.print(ANSI_BLUE + "  " + cardBoard[i][j].getYokaiCard().getCardName() + "  " + ANSI_RESET);
+                    } else if (cardBoard[i][j].getYokaiCard().getCardName() == 'R') {
+                        System.out.print(ANSI_RED + "  " + cardBoard[i][j].getYokaiCard().getCardName() + "  " + ANSI_RESET);
+                    } else if (cardBoard[i][j].getYokaiCard().getCardName() == 'P') {
+                        System.out.print(ANSI_PURPLE + "  " + cardBoard[i][j].getYokaiCard().getCardName() + "  " + ANSI_RESET);
+                    } else {
+                        System.out.print(ANSI_GREEN + "  " + cardBoard[i][j].getYokaiCard().getCardName() + "  " + ANSI_RESET);
+                    }
                 } else if (clueBoard[i][j] != null) {
                     if (clueBoard[i][j].getClueCard().getClueName().length() == 1) {
-                        System.out.print("  " + ANSI_RED + clueBoard[i][j].getClueCard().getClueName() + ANSI_RESET + "  ");
+                        System.out.print("  " + ANSI_YELLOW + clueBoard[i][j].getClueCard().getClueName() + ANSI_RESET + "  ");
                     } else if (clueBoard[i][j].getClueCard().getClueName().length() == 2) {
-                        System.out.print("  " + ANSI_RED + clueBoard[i][j].getClueCard().getClueName() + ANSI_RESET + " ");
+                        System.out.print("  " + ANSI_YELLOW + clueBoard[i][j].getClueCard().getClueName() + ANSI_RESET + " ");
                     } else {
-                        System.out.print(" " + ANSI_RED + clueBoard[i][j].getClueCard().getClueName() + ANSI_RESET + " ");
+                        System.out.print(" " + ANSI_YELLOW + clueBoard[i][j].getClueCard().getClueName() + ANSI_RESET + " ");
                     }
                 } else {
-                    System.out.print(ANSI_BLUE + "  ■  " + ANSI_RESET);
+                    System.out.print(ANSI_CYAN + "  ■  " + ANSI_RESET);
                 }
             }
             System.out.print("│");
@@ -445,7 +455,15 @@ public class YokaiGame {
                 if (cardBoard[i][j] == null) {
                     System.out.print("  ·  ");
                 } else {
-                    System.out.print(ANSI_YELLOW + "  " + cardBoard[i][j].getYokaiCard().getCardName() + "  " + ANSI_RESET);
+                    if (cardBoard[i][j].getYokaiCard().getCardName() == 'G') {
+                        System.out.print(ANSI_GREEN + "  " + cardBoard[i][j].getYokaiCard().getCardName() + "  " + ANSI_RESET);
+                    } else if (cardBoard[i][j].getYokaiCard().getCardName() == 'B') {
+                        System.out.print(ANSI_BLUE + "  " + cardBoard[i][j].getYokaiCard().getCardName() + "  " + ANSI_RESET);
+                    } else if (cardBoard[i][j].getYokaiCard().getCardName() == 'P') {
+                        System.out.print(ANSI_PURPLE + "  " + cardBoard[i][j].getYokaiCard().getCardName() + "  " + ANSI_RESET);
+                    } else {
+                        System.out.print(ANSI_RED + "  " + cardBoard[i][j].getYokaiCard().getCardName() + "  " + ANSI_RESET);
+                    }
                 }
             }
             System.out.print("│");
@@ -458,14 +476,35 @@ public class YokaiGame {
     }
 
     public void playSound() {
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("8-bit.wav").getAbsoluteFile());
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.start();
-        } catch (Exception ex) {
-            System.out.println("Error with playing sound.");
-            ex.printStackTrace();
+        Scanner scannerLine = new Scanner(System.in);
+        Scanner scannerInt = new Scanner(System.in);
+
+        System.out.println("Voulez vous de la musique durant la partie ? (Y/N)");
+        String choice = scannerLine.nextLine();
+        if (choice.equals("Y")) {
+            System.out.println("\nChoisissez la musique que vous voulez écouter :\n");
+            System.out.println("1 : Sandy Marton - Camel by Camel");
+            System.out.println("2 : AdhesiveWombat - Night Shade");
+            System.out.println("3 : Blue - 8 Bit Universe\n");
+            System.out.print("Vôtre choix : ");
+            int choose = scannerInt.nextInt();
+            System.out.println();
+
+            HashMap<Integer, String> playList = new HashMap<>();
+            playList.put(1,"SandyMartonCamelbyCamel.wav");
+            playList.put(2,"AdhesiveWombatBitAdventure.wav");
+            playList.put(3,"BlueBitUniverse.wav");
+
+            try {
+                AudioInputStream audioInputStream =
+                        AudioSystem.getAudioInputStream(new File("music/" + playList.get(choose)).getAbsoluteFile());
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioInputStream);
+                clip.start();
+            } catch (Exception ex) {
+                System.out.println("Error with playing sound.");
+                ex.printStackTrace();
+            }
         }
     }
 
